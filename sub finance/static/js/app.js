@@ -19,27 +19,47 @@ function initIcons() {
   }
 }
 
-// Fetch live IPOs and stats
+// Fetch live IPOs and stats (Instant render with embedded data)
 async function fetchInitialData() {
-  showLoading(true);
-  try {
-    const [iposRes, statsRes] = await Promise.all([
-      fetch('/api/ipos'),
-      fetch('/api/stats')
-    ]);
-
-    const iposData = await iposRes.json();
-    const statsData = await statsRes.json();
-
-    // Ensure only Open IPOs are kept
-    allIpos = (iposData.ipos || []).filter(i => i.status === 'Open');
-    
-    renderStats(statsData.stats || {});
+  // 1. Instant Render if initial data exists (0 millisecond loading, no spinner!)
+  if (window.__INITIAL_DATA__ && window.__INITIAL_DATA__.ipos && window.__INITIAL_DATA__.ipos.length > 0) {
+    allIpos = window.__INITIAL_DATA__.ipos.filter(i => i.status === 'Open');
+    renderStats(window.__INITIAL_DATA__.stats || {});
     updateCategoryCounts(allIpos);
     applyFiltersAndRender();
+    showLoading(false);
+  } else {
+    showLoading(true);
+  }
+
+  // 2. Silent background check to fetch any newer live updates
+  try {
+    let iposData = null;
+
+    try {
+      const iposRes = await fetch('/api/ipos');
+      if (iposRes.ok) {
+        iposData = await iposRes.json();
+      }
+    } catch (apiErr) {}
+
+    if (!iposData || !iposData.ipos || iposData.ipos.length === 0) {
+      try {
+        const staticRes = await fetch('/data/ipos.json');
+        if (staticRes.ok) {
+          iposData = await staticRes.json();
+        }
+      } catch (stErr) {}
+    }
+
+    if (iposData && iposData.ipos && iposData.ipos.length > 0) {
+      allIpos = iposData.ipos.filter(i => i.status === 'Open');
+      renderStats(iposData.stats || {});
+      updateCategoryCounts(allIpos);
+      applyFiltersAndRender();
+    }
   } catch (err) {
-    console.error('Error loading IPO data:', err);
-    showToast('Failed to load IPO data.', 'error');
+    console.debug('Background data check completed.');
   } finally {
     showLoading(false);
   }
