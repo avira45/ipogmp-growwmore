@@ -3,16 +3,20 @@
   "cleanUrls": true,
   "routes": [
     {
+      "src": "/api/(.*)",
+      "dest": "/api/index.py"
+    },
+    {
       "src": "/static/(.*)",
       "dest": "/static/$1"
     },
     {
-      "src": "/api/(.*)",
-      "dest": "/app/main.py"
+      "src": "/data/(.*)",
+      "dest": "/data/$1"
     },
     {
       "src": "/(.*)",
-      "dest": "/static/index.html"
+      "dest": "/index.html"
     }
   ]
 }
