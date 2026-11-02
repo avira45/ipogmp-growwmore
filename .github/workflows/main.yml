@@ -1,1 +1,45 @@
+name: Daily IPO GMP Sync
 
+on:
+  schedule:
+    # 04:00 UTC = 09:30 AM IST every single day
+    - cron: '0 4 * * *'
+  workflow_dispatch: # Allows manual trigger anytime from GitHub Actions tab
+
+permissions:
+  contents: write
+
+jobs:
+  update-gmp:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests beautifulsoup4 apscheduler
+
+      - name: Run daily scraper
+        run: |
+          python -c "
+          import sys, os
+          for p in ['.', 'sub finance']:
+              if os.path.exists(p) and p not in sys.path:
+                  sys.path.insert(0, os.path.abspath(p))
+          from app.scheduler import sync_daily_gmp
+          res = sync_daily_gmp(force=True)
+          print('Sync result:', res)
+          "
+
+      - name: Commit and push updated IPO data
+        run: |
+          git config --global user.name "Growmore Bot"
+          git config --global user.email "bot@growmore.com"
+          git add -A
+          git commit -m "Auto-update IPO GMP [skip ci]" || exit 0
+          git push
