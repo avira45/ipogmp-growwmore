@@ -13,9 +13,56 @@ DATA_FILE = os.path.join(DATA_DIR, 'ipos.json')
 
 os.makedirs(HISTORY_DIR, exist_ok=True)
 
+def parse_date_safe(date_str: str, default_year: int = None) -> Optional[datetime.date]:
+    """Parse date string like '2-Nov' or '30-Oct' into a datetime.date object."""
+    if not date_str or str(date_str).strip() in ['--', '-', '']:
+        return None
+    if default_year is None:
+        default_year = datetime.datetime.now().year
+    try:
+        parts = str(date_str).strip().split('-')
+        if len(parts) == 2:
+            day = int(parts[0])
+            month_str = parts[1]
+            return datetime.datetime.strptime(f"{day}-{month_str}-{default_year}", "%d-%b-%Y").date()
+    except Exception:
+        pass
+    return None
+
 def filter_open_ipos(ipos: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-    """Only keep IPOs that are currently OPEN for bidding."""
-    return [i for i in ipos if i.get('status') == 'Open']
+    """
+    Keep IPOs on the tracker until their Listing Date has passed.
+    Once listed (listing date < today), the IPO is removed.
+    """
+    today = datetime.date.today()
+    active = []
+
+    for i in ipos:
+        list_dt = parse_date_safe(i.get('listing_date'))
+        close_dt = parse_date_safe(i.get('close_date'))
+        allot_dt = parse_date_safe(i.get('allotment_date'))
+        status = i.get('status', 'Open')
+
+        # Check if already listed in the past
+        if list_dt and list_dt < today:
+            continue
+
+        # Set human-readable stage badge
+        if list_dt and list_dt == today:
+            i['stage'] = 'Listing Today'
+        elif close_dt and close_dt < today:
+            if allot_dt and allot_dt <= today:
+                i['stage'] = 'Allotted'
+            else:
+                i['stage'] = 'Closed'
+        elif status == 'Open':
+            i['stage'] = 'Open'
+        else:
+            i['stage'] = status
+
+        active.append(i)
+
+    return active
 
 def save_ipos(ipos: List[Dict[str, Any]]) -> Dict[str, Any]:
     """Save scraped IPOs to primary JSON and daily archive."""

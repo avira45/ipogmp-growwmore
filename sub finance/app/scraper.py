@@ -92,17 +92,17 @@ def fetch_live_ipo_gmp():
                 exchange = "NSE"
 
             # Detect status
-            # U = Upcoming, O = Open, C = Closed
+            # U = Upcoming, O = Open, CT = Closing Today (Still Open!), C = Closed
             status = "Upcoming"
             for b in badges:
-                b_up = b.upper()
-                if b_up == 'O' or 'OPEN' in b_up:
+                b_up = b.upper().strip()
+                if b_up in ['O', 'OPEN', 'CT', 'CLOSING TODAY', 'CLOSING']:
                     status = "Open"
                     break
-                elif b_up == 'C' or 'CLOSED' in b_up:
+                elif b_up in ['C', 'CLOSED']:
                     status = "Closed"
                     break
-                elif b_up == 'U' or 'UPCOMING' in b_up:
+                elif b_up in ['U', 'UPCOMING']:
                     status = "Upcoming"
                     break
 
