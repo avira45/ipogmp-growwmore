@@ -314,6 +314,7 @@
               <th class="px-3 py-3.5 border-b border-slate-800 text-right bg-emerald-950/40 text-emerald-300">GMP (₹)</th>
               <th class="px-3 py-3.5 border-b border-slate-800 text-right">Est. Listing</th>
               <th class="px-3 py-3.5 border-b border-slate-800 text-right text-emerald-400">Est. Gain %</th>
+              <th class="px-3 py-3.5 border-b border-slate-800 text-center bg-amber-950/40 text-amber-300">Subscription</th>
               <th class="px-3 py-3.5 border-b border-slate-800 text-center">Open Date</th>
               <th class="px-3 py-3.5 border-b border-slate-800 text-center">Close Date</th>
               <!-- Prominent Allotment Date Column -->
@@ -743,6 +744,11 @@
           <td class="px-3 py-3.5 text-right whitespace-nowrap ${gainColor}">
             ${isPositive ? '+' : ''}${ipo.gmp_percentage}%
           </td>
+          <td class="px-3 py-3.5 text-center whitespace-nowrap">
+            <span class="inline-block px-2.5 py-0.5 rounded text-[11px] font-bold ${ipo.subscription && ipo.subscription !== '-' ? 'bg-amber-50 text-amber-800 border border-amber-300' : 'text-slate-400'}">
+              ${ipo.subscription && ipo.subscription !== '-' ? ipo.subscription : '-'}
+            </span>
+          </td>
           <td class="px-3 py-3.5 text-center text-slate-700 font-medium whitespace-nowrap">
             ${ipo.open_date}
           </td>
@@ -828,6 +834,7 @@
             <div class="space-y-1.5 text-xs text-slate-600 border-t border-slate-100 pt-3">
               <div class="flex justify-between"><span>Lot Size:</span> <strong class="text-slate-800">${ipo.lot_size.toLocaleString()} shares</strong></div>
               <div class="flex justify-between"><span>Min. Investment:</span> <strong class="text-slate-800">₹${ipo.min_investment.toLocaleString()}</strong></div>
+              <div class="flex justify-between"><span>Subscription Rate:</span> <strong class="${ipo.subscription && ipo.subscription !== '-' ? 'text-amber-700 font-extrabold' : 'text-slate-600'}">${ipo.subscription && ipo.subscription !== '-' ? ipo.subscription : '-'}</strong></div>
               <div class="flex justify-between"><span>Est. Profit / Lot:</span> <strong class="${isPositive ? 'text-emerald-700 font-extrabold' : 'text-slate-600'}">${isPositive ? '+' : ''}₹${ipo.est_profit_per_lot.toLocaleString()}</strong></div>
             </div>
 
