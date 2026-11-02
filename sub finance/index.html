@@ -884,13 +884,14 @@
         }
       });
       applyFiltersAndRender();
+    }
 
-    // Real-time dynamic sync on page visit
+    // Optional background sync on first page load
     function syncLiveIpoData() {
       fetch('/data/ipos.json?t=' + Date.now())
         .then(r => r.json())
         .then(d => {
-          if (d && Array.isArray(d.ipos) && d.ipos.length > 0) {
+          if (d && Array.isArray(d.ipos) && d.ipos.length >= allIpos.length) {
             allIpos = d.ipos;
             renderStats(d.stats || {});
             updateCategoryCounts(allIpos);
@@ -899,9 +900,8 @@
         })
         .catch(() => {});
     }
-    syncLiveIpoData();
-    
-    }
+    // Only run once on page startup
+    setTimeout(syncLiveIpoData, 1000);
 
     function handleSearch(val) {
       currentSearch = val;
