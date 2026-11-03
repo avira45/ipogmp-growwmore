@@ -33,6 +33,7 @@ def filter_open_ipos(ipos: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     """
     Keep IPOs on the tracker until their Listing Date has passed.
     Once listed (listing date < today), the IPO is removed.
+    Orders Open IPOs at the very top of the list.
     """
     today = datetime.date.today()
     active = []
@@ -40,28 +41,62 @@ def filter_open_ipos(ipos: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     for i in ipos:
         list_dt = parse_date_safe(i.get('listing_date'))
         close_dt = parse_date_safe(i.get('close_date'))
+        open_dt = parse_date_safe(i.get('open_date'))
         allot_dt = parse_date_safe(i.get('allotment_date'))
         status = i.get('status', 'Open')
 
-        # Check if already listed in the past
+        # Check if already listed in the past (listing_date < today)
         if list_dt and list_dt < today:
             continue
 
-        # Set human-readable stage badge
+        # Set human-readable stage & badge matching InvestorGain style
         if list_dt and list_dt == today:
             i['stage'] = 'Listing Today'
+            i['is_closing_today'] = False
+            i['is_closed'] = True
         elif close_dt and close_dt < today:
             if allot_dt and allot_dt <= today:
                 i['stage'] = 'Allotted'
             else:
                 i['stage'] = 'Closed'
+            i['is_closing_today'] = False
+            i['is_closed'] = True
+        elif close_dt and close_dt == today:
+            i['stage'] = 'Closing Today'
+            i['is_closing_today'] = True
+            i['is_closed'] = False
+        elif open_dt and open_dt <= today and (not close_dt or close_dt > today):
+            i['stage'] = 'Open'
+            i['is_closing_today'] = False
+            i['is_closed'] = False
         elif status == 'Open':
             i['stage'] = 'Open'
+            i['is_closing_today'] = False
+            i['is_closed'] = False
         else:
             i['stage'] = status
+            i['is_closing_today'] = False
+            i['is_closed'] = (status == 'Closed')
 
         active.append(i)
 
+    # Sort order:
+    # 1. Open IPOs at the very TOP (Newest open_date first)
+    # 2. Closing Today IPOs
+    # 3. Listing Today IPOs
+    # 4. Closed / Allotted IPOs at the bottom
+    def prio(x):
+        st = x.get('stage')
+        if st == 'Open':
+            o = parse_date_safe(x.get('open_date'))
+            return (0, -(o.toordinal() if o else 0))
+        elif st == 'Closing Today':
+            return (1, 0)
+        elif st == 'Listing Today':
+            return (2, 0)
+        return (3, 0)
+
+    active.sort(key=prio)
     return active
 
 def save_ipos(ipos: List[Dict[str, Any]]) -> Dict[str, Any]:
@@ -74,11 +109,11 @@ def save_ipos(ipos: List[Dict[str, Any]]) -> Dict[str, Any]:
     today_str = now.strftime("%Y-%m-%d")
     timestamp_str = now.strftime("%Y-%m-%d %H:%M:%S")
 
-    # Only keep Open IPOs
-    open_ipos = filter_open_ipos(ipos)
+    # Filter until listing date + sort new open on top
+    active_ipos = filter_open_ipos(ipos)
 
-    # Calculate stats based on open IPOs
-    stats = compute_stats(open_ipos, timestamp_str)
+    # Calculate stats
+    stats = compute_stats(active_ipos, timestamp_str)
 
     data_payload = {
         "brand": "Growmore",
@@ -86,7 +121,7 @@ def save_ipos(ipos: List[Dict[str, Any]]) -> Dict[str, Any]:
         "last_updated": timestamp_str,
         "date": today_str,
         "stats": stats,
-        "ipos": open_ipos,
+        "ipos": active_ipos,
         "raw_count": len(ipos)
     }
 
@@ -98,40 +133,30 @@ def save_ipos(ipos: List[Dict[str, Any]]) -> Dict[str, Any]:
         with open(archive_file, 'w', encoding='utf-8') as f:
             json.dump(data_payload, f, indent=2, ensure_ascii=False)
 
-        logger.info("Saved %d OPEN IPOs to %s", len(open_ipos), DATA_FILE)
+        logger.info("Saved %d active IPOs until listing to %s", len(active_ipos), DATA_FILE)
     except Exception as e:
         logger.error("Error saving IPO data: %s", e)
 
     return data_payload
 
 def load_ipos() -> Dict[str, Any]:
-    """Load current IPO data from file, keeping only Open IPOs."""
-    if os.path.exists(DATA_FILE):
-        try:
-            with open(DATA_FILE, 'r', encoding='utf-8') as f:
-                data = json.load(f)
-                if "ipos" in data:
-                    data["ipos"] = filter_open_ipos(data["ipos"])
-                return data
-        except Exception as e:
-            logger.error("Error loading %s: %s", DATA_FILE, e)
-
-    return {
-        "brand": "Growmore",
-        "subdomain": "ipo.growmore",
-        "last_updated": None,
-        "date": None,
-        "stats": {},
-        "ipos": []
-    }
+    """Load latest cached IPO data from file."""
+    if not os.path.exists(DATA_FILE):
+        return {"brand": "Growmore", "ipos": [], "stats": {}}
+    try:
+        with open(DATA_FILE, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except Exception as e:
+        logger.error("Error loading %s: %s", DATA_FILE, e)
+        return {"brand": "Growmore", "ipos": [], "stats": {}}
 
 def compute_stats(ipos: List[Dict[str, Any]], timestamp: str) -> Dict[str, Any]:
-    """Compute market summary statistics for open IPOs."""
+    """Compute market summary statistics for tracked IPOs."""
     total = len(ipos)
     if total == 0:
         return {}
 
-    open_ipos = [i for i in ipos if i.get('status') == 'Open']
+    open_ipos = [i for i in ipos if i.get('stage') in ['Open', 'Closing Today']]
     sme_ipos = [i for i in ipos if i.get('category') == 'SME']
     mainboard_ipos = [i for i in ipos if i.get('category') == 'Mainboard']
 
