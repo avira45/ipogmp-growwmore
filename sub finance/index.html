@@ -733,15 +733,6 @@
         return '<span class="inline-block text-[10px] font-black px-2.5 py-0.5 rounded-full bg-[#64748b] text-white tracking-wider uppercase shadow-2xs">CLOSED</span>';
       }
     }
-
-    else if (stage === 'Listing Today') {
-        return '<span class="text-[10px] font-bold px-2.5 py-1 rounded-full border bg-amber-100 text-amber-900 border-amber-300 inline-flex items-center gap-1">🔔 Listing Today</span>';
-      } else if (stage === 'Allotted') {
-        return '<span class="text-[10px] font-bold px-2.5 py-1 rounded-full border bg-blue-100 text-blue-800 border-blue-300 inline-flex items-center gap-1">Allotted</span>';
-      } else {
-        return '<span class="text-[10px] font-bold px-2.5 py-1 rounded-full border bg-slate-100 text-slate-700 border-slate-300 inline-flex items-center gap-1">Closed</span>';
-      }
-    }
     
     function createTableRow(ipo) {
       const isPositive = ipo.gmp > 0;
