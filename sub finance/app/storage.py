@@ -31,9 +31,12 @@ def parse_date_safe(date_str: str, default_year: int = None) -> Optional[datetim
 
 def filter_open_ipos(ipos: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     """
-    Keep IPOs on the tracker until their Listing Date has passed.
-    Once listed (listing date < today), the IPO is removed.
-    Orders Open IPOs at the very top of the list.
+    Keep IPOs on the tracker until their Listing Date is completed.
+    Once listed (listing date < today), the IPO is completely removed.
+    Orders:
+    1. Open / Closing Today at the top
+    2. Listing Today
+    3. Allotted / Closed at the bottom
     """
     today = datetime.date.today()
     active = []
@@ -45,11 +48,13 @@ def filter_open_ipos(ipos: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         allot_dt = parse_date_safe(i.get('allotment_date'))
         status = i.get('status', 'Open')
 
-        # Check if already listed in the past (listing_date < today)
+        # Drop once listing date has passed
         if list_dt and list_dt < today:
             continue
+        # Drop if close date was more than 10 days ago and no listing date
+        if not list_dt and close_dt and close_dt < today - datetime.timedelta(days=10):
+            continue
 
-        # Set human-readable stage & badge matching InvestorGain style
         if list_dt and list_dt == today:
             i['stage'] = 'Listing Today'
             i['is_closing_today'] = False
@@ -81,10 +86,11 @@ def filter_open_ipos(ipos: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         active.append(i)
 
     # Sort order:
-    # 1. Open IPOs at the very TOP (Newest open_date first)
-    # 2. Closing Today IPOs
-    # 3. Listing Today IPOs
-    # 4. Closed / Allotted IPOs at the bottom
+    # 1. Open up (newest open first)
+    # 2. Closing Today
+    # 3. Listing Today
+    # 4. Allotted
+    # 5. Closed
     def prio(x):
         st = x.get('stage')
         if st == 'Open':
@@ -94,7 +100,10 @@ def filter_open_ipos(ipos: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
             return (1, 0)
         elif st == 'Listing Today':
             return (2, 0)
-        return (3, 0)
+        elif st == 'Allotted':
+            return (3, 0)
+        else:
+            return (4, 0)
 
     active.sort(key=prio)
     return active
@@ -109,7 +118,7 @@ def save_ipos(ipos: List[Dict[str, Any]]) -> Dict[str, Any]:
     today_str = now.strftime("%Y-%m-%d")
     timestamp_str = now.strftime("%Y-%m-%d %H:%M:%S")
 
-    # Filter until listing date + sort new open on top
+    # Filter until listing date is complete + sort: Open -> Listing Today -> Allotted
     active_ipos = filter_open_ipos(ipos)
 
     # Calculate stats
@@ -133,7 +142,7 @@ def save_ipos(ipos: List[Dict[str, Any]]) -> Dict[str, Any]:
         with open(archive_file, 'w', encoding='utf-8') as f:
             json.dump(data_payload, f, indent=2, ensure_ascii=False)
 
-        logger.info("Saved %d active IPOs until listing to %s", len(active_ipos), DATA_FILE)
+        logger.info("Saved %d active IPOs to %s", len(active_ipos), DATA_FILE)
     except Exception as e:
         logger.error("Error saving IPO data: %s", e)
 
