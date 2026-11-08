@@ -1,8 +1,8 @@
 {
   "brand": "Growmore",
   "subdomain": "ipo.growmore",
-  "last_updated": "2026-11-07 10:55:51",
-  "date": "2026-11-07",
+  "last_updated": "2026-11-08 11:07:58",
+  "date": "2026-11-08",
   "stats": {
     "total_ipos": 2,
     "open_count": 0,
@@ -15,7 +15,7 @@
       "gmp_percentage": 1.06,
       "category": "SME"
     },
-    "last_updated": "2026-11-07 10:55:51"
+    "last_updated": "2026-11-08 11:07:58"
   },
   "ipos": [
     {
@@ -41,7 +41,7 @@
       "close_date": "5-Nov",
       "allotment_date": "6-Nov",
       "listing_date": "11-Nov",
-      "updated_at": "7-Nov 12:36",
+      "updated_at": "8-Nov 13:36",
       "stage": "Allotted",
       "is_closing_today": false,
       "is_closed": true
@@ -69,7 +69,7 @@
       "close_date": "4-Nov",
       "allotment_date": "5-Nov",
       "listing_date": "9-Nov",
-      "updated_at": "7-Nov 12:37",
+      "updated_at": "8-Nov 13:37",
       "stage": "Allotted",
       "is_closing_today": false,
       "is_closed": true
