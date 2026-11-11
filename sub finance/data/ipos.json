@@ -1,8 +1,8 @@
 {
   "brand": "Growmore",
   "subdomain": "ipo.growmore",
-  "last_updated": "2026-11-10 12:18:52",
-  "date": "2026-11-10",
+  "last_updated": "2026-11-11 11:44:11",
+  "date": "2026-11-11",
   "stats": {
     "total_ipos": 1,
     "open_count": 0,
@@ -10,7 +10,7 @@
     "mainboard_count": 0,
     "avg_gain_percentage": 0.0,
     "top_gainer": null,
-    "last_updated": "2026-11-10 12:18:52"
+    "last_updated": "2026-11-11 11:44:11"
   },
   "ipos": [
     {
@@ -18,7 +18,7 @@
       "name": "Antala Industries",
       "category": "SME",
       "exchange": "BSE",
-      "status": "Closed",
+      "status": "Upcoming",
       "price": 66.0,
       "price_text": "₹66",
       "gmp": 0.0,
@@ -36,8 +36,8 @@
       "close_date": "5-Nov",
       "allotment_date": "6-Nov",
       "listing_date": "11-Nov",
-      "updated_at": "10-Nov 16:33",
-      "stage": "Allotted",
+      "updated_at": "11-Nov 9:37",
+      "stage": "Listing Today",
       "is_closing_today": false,
       "is_closed": true
     }
