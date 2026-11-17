@@ -1,8 +1,8 @@
 {
   "brand": "Growmore",
   "subdomain": "ipo.growmore",
-  "last_updated": "2026-11-16 12:31:33",
-  "date": "2026-11-16",
+  "last_updated": "2026-11-17 12:52:58",
+  "date": "2026-11-17",
   "stats": {
     "total_ipos": 3,
     "open_count": 0,
@@ -15,7 +15,7 @@
       "gmp_percentage": 10.2,
       "category": "SME"
     },
-    "last_updated": "2026-11-16 12:31:33"
+    "last_updated": "2026-11-17 12:52:58"
   },
   "ipos": [
     {
@@ -26,22 +26,22 @@
       "status": "Upcoming",
       "price": 136.0,
       "price_text": "₹136",
-      "gmp": 4.3,
-      "gmp_percentage": 3.16,
-      "est_listing_price": 140.3,
-      "gmp_trend_low": 4.3,
-      "gmp_trend_high": 4.3,
+      "gmp": 4.0,
+      "gmp_percentage": 2.94,
+      "est_listing_price": 140.0,
+      "gmp_trend_low": 4.0,
+      "gmp_trend_high": 4.0,
       "rating": 1,
       "subscription": "-",
       "ipo_size": "₹8981.12 Cr",
       "lot_size": 110,
       "min_investment": 14960.0,
-      "est_profit_per_lot": 473.0,
+      "est_profit_per_lot": 440.0,
       "open_date": "19-Nov",
       "close_date": "23-Nov",
       "allotment_date": "25-Nov",
       "listing_date": "27-Nov",
-      "updated_at": "16-Nov 17:02",
+      "updated_at": "17-Nov 15:02",
       "stage": "Upcoming",
       "is_closing_today": false,
       "is_closed": false
@@ -69,7 +69,7 @@
       "close_date": "23-Nov",
       "allotment_date": "25-Nov",
       "listing_date": "27-Nov",
-      "updated_at": "16-Nov 17:02",
+      "updated_at": "17-Nov 15:02",
       "stage": "Upcoming",
       "is_closing_today": false,
       "is_closed": false
@@ -97,7 +97,7 @@
       "close_date": "20-Nov",
       "allotment_date": "23-Nov",
       "listing_date": "26-Nov",
-      "updated_at": "16-Nov 17:02",
+      "updated_at": "17-Nov 15:02",
       "stage": "Upcoming",
       "is_closing_today": false,
       "is_closed": false
