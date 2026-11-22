@@ -1,21 +1,21 @@
 {
   "brand": "Growmore",
   "subdomain": "ipo.growmore",
-  "last_updated": "2026-11-21 12:17:38",
-  "date": "2026-11-21",
+  "last_updated": "2026-11-22 12:21:56",
+  "date": "2026-11-22",
   "stats": {
     "total_ipos": 7,
     "open_count": 2,
     "sme_count": 2,
     "mainboard_count": 5,
-    "avg_gain_percentage": 10.7,
+    "avg_gain_percentage": 10.8,
     "top_gainer": {
       "name": "Watrana Rentals",
       "gmp": 65.0,
       "gmp_percentage": 26.53,
       "category": "SME"
     },
-    "last_updated": "2026-11-21 12:17:38"
+    "last_updated": "2026-11-22 12:21:56"
   },
   "ipos": [
     {
@@ -41,7 +41,7 @@
       "close_date": "23-Nov",
       "allotment_date": "25-Nov",
       "listing_date": "27-Nov",
-      "updated_at": "21-Nov 15:02",
+      "updated_at": "22-Nov 13:37",
       "stage": "Open",
       "is_closing_today": false,
       "is_closed": false
@@ -69,7 +69,7 @@
       "close_date": "23-Nov",
       "allotment_date": "25-Nov",
       "listing_date": "27-Nov",
-      "updated_at": "21-Nov 15:02",
+      "updated_at": "22-Nov 13:37",
       "stage": "Open",
       "is_closing_today": false,
       "is_closed": false
@@ -97,7 +97,7 @@
       "close_date": "-",
       "allotment_date": "-",
       "listing_date": "-",
-      "updated_at": "21-Nov 5:55",
+      "updated_at": "22-Nov 5:55",
       "stage": "Upcoming",
       "is_closing_today": false,
       "is_closed": false
@@ -125,7 +125,7 @@
       "close_date": "1-Dec",
       "allotment_date": "2-Dec",
       "listing_date": "4-Dec",
-      "updated_at": "21-Nov 5:55",
+      "updated_at": "22-Nov 5:55",
       "stage": "Upcoming",
       "is_closing_today": false,
       "is_closed": false
@@ -153,7 +153,7 @@
       "close_date": "30-Nov",
       "allotment_date": "1-Dec",
       "listing_date": "3-Dec",
-      "updated_at": "21-Nov 15:02",
+      "updated_at": "22-Nov 13:37",
       "stage": "Upcoming",
       "is_closing_today": false,
       "is_closed": false
@@ -181,7 +181,7 @@
       "close_date": "27-Nov",
       "allotment_date": "30-Nov",
       "listing_date": "2-Dec",
-      "updated_at": "21-Nov 14:55",
+      "updated_at": "22-Nov 13:36",
       "stage": "Upcoming",
       "is_closing_today": false,
       "is_closed": false
@@ -194,9 +194,9 @@
       "status": "Closed",
       "price": 272.0,
       "price_text": "₹272",
-      "gmp": 14.0,
-      "gmp_percentage": 5.15,
-      "est_listing_price": 286.0,
+      "gmp": 14.5,
+      "gmp_percentage": 5.33,
+      "est_listing_price": 286.5,
       "gmp_trend_low": 13.0,
       "gmp_trend_high": 40.0,
       "rating": 2,
@@ -204,12 +204,12 @@
       "ipo_size": "₹455.49 Cr",
       "lot_size": 55,
       "min_investment": 14960.0,
-      "est_profit_per_lot": 770.0,
+      "est_profit_per_lot": 797.5,
       "open_date": "18-Nov",
       "close_date": "20-Nov",
       "allotment_date": "23-Nov",
       "listing_date": "26-Nov",
-      "updated_at": "21-Nov 15:02",
+      "updated_at": "22-Nov 13:37",
       "stage": "Closed",
       "is_closing_today": false,
       "is_closed": true
